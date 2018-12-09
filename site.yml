@@ -69,24 +69,32 @@
         enabled: true
 
     - file:
-        path: "/home/vagrant/{{ item }}"
+        path: "/home/vagrant/vagrant/infraci/.vagrant/machines/{{ item }}/virtualbox"
         state: directory
         mode: 0700
         owner: vagrant
         group: vagrant
       loop:
-        - vagrant/infraci/.vagrant/machines/gitlab/virtualbox
-        - vagrant/infraci/.vagrant/machines/gitlab-runner/virtualbox
+        - gitlab
+        - gitlab-runner
+        - ketchup
+        - ketchup-nginx
+        - test-ketchup
+        - test-ketchup-nginx
 
     - copy:
         src: private_key
-        dest: "/home/vagrant/{{ item }}/private_key"
+        dest: "/home/vagrant/vagrant/infraci/.vagrant/machines/{{ item }}/virtualbox/private_key"
         mode: 0600
         owner: vagrant
         group: vagrant
       loop:
-        - vagrant/infraci/.vagrant/machines/gitlab/virtualbox
-        - vagrant/infraci/.vagrant/machines/gitlab-runner/virtualbox
+        - gitlab
+        - gitlab-runner
+        - ketchup
+        - ketchup-nginx
+        - test-ketchup
+        - test-ketchup-nginx
 
     - copy:
         src: vimrc
