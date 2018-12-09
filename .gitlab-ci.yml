@@ -1,0 +1,17 @@
+---
+stages:
+  - initialize
+
+Setup_Clients_Env:
+  stage: initialize
+  image:
+    name: centos:latest
+  script:
+    - yum install -y epel-release
+    - yum install -y ansible docker-client
+    - docker version
+    - ANSIBLE_CONFIG=./ansible.cfg ansible --version
+    - ANSIBLE_CONFIG=./ansible.cfg ansible all -i hosts -c docker -m ping
+    - ANSIBLE_CONFIG=./ansible.cfg ansible-playbook -i hosts -c docker site.yml
+  tags:
+    - docker

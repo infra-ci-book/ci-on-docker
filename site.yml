@@ -1,0 +1,110 @@
+---
+- hosts: all
+  gather_facts: false
+  tasks:
+    - yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - openssh-server
+        - openssh-clients
+        - sudo
+
+    - systemd:
+        name: sshd
+        state: started
+        enabled: true
+
+    - group:
+        name: vagrant
+        state: present
+
+    - user:
+        name: vagrant
+        groups: vagrant,wheel
+
+    - file:
+        path: /home/vagrant/.ssh
+        state: directory
+        mode: 0700
+        owner: vagrant
+        group: vagrant
+
+    - copy:
+        src: authorized_keys
+        dest: /home/vagrant/.ssh/authorized_keys
+        mode: 0644
+        owner: vagrant
+        group: vagrant
+
+    - lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^vagrant\s'
+        line: 'vagrant ALL=(ALL) NOPASSWD: ALL'
+
+- hosts: consoles
+  gather_facts: true
+  tasks:
+    - yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - vim
+        - which
+        - tree
+        - git
+        - epel-release
+
+    - yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - ansible-2.4.2.0-2.el7
+        - ansible-lint-3.4.21-1.el7
+
+    - systemd:
+        name: sshd
+        state: started
+        enabled: true
+
+    - file:
+        path: "/home/vagrant/{{ item }}"
+        state: directory
+        mode: 0700
+        owner: vagrant
+        group: vagrant
+      loop:
+        - vagrant/infraci/.vagrant/machines/gitlab/virtualbox
+        - vagrant/infraci/.vagrant/machines/gitlab-runner/virtualbox
+
+    - copy:
+        src: private_key
+        dest: "/home/vagrant/{{ item }}/private_key"
+        mode: 0600
+        owner: vagrant
+        group: vagrant
+      loop:
+        - vagrant/infraci/.vagrant/machines/gitlab/virtualbox
+        - vagrant/infraci/.vagrant/machines/gitlab-runner/virtualbox
+
+    - copy:
+        src: vimrc
+        dest: "/home/vagrant/.vimrc"
+        mode: 0755
+        owner: vagrant
+        group: vagrant
+
+    - file:
+        path: /home/vagrant/.ssh
+        state: directory
+        mode: 0700
+        owner: vagrant
+        group: vagrant
+
+    - copy:
+        src: private_key
+        dest: /home/vagrant/.ssh/infraci
+        mode: 0600
+        owner: vagrant
+        group: vagrant

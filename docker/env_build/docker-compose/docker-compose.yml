@@ -1,0 +1,84 @@
+version: "3.6"
+
+x-template: &template
+  image: centos:7.3.1611
+  privileged: true
+  command: /sbin/init
+  restart: always
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:10.8.4-ce.0
+    container_name: gitlab
+    hostname: gitlab
+    restart: always
+    volumes:
+      - ./volumes/gitlab.rb:/etc/gitlab/gitlab.rb
+    ports:
+      - "8080:80"
+    networks:
+      infraci_nw:
+        ipv4_address: 192.168.33.10
+  gitlab-runner:
+    image: gitlab/gitlab-runner:v10.8.0
+    container_name: gitlab-runner
+    hostname: gitlab-runner
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      infraci_nw:
+        ipv4_address: 192.168.33.11
+  client1:
+    <<: *template
+    container_name: client1
+    hostname: client1
+    ports:
+      - "8082:80"
+    networks:
+      infraci_nw:
+        ipv4_address: 192.168.33.12
+  client2:
+    <<: *template
+    container_name: client2
+    hostname: client2
+    ports:
+      - "8083:80"
+    networks:
+      infraci_nw:
+        ipv4_address: 192.168.33.13
+  client3:
+    <<: *template
+    container_name: client3
+    hostname: client3
+    ports:
+      - "8084:80"
+    networks:
+      infraci_nw:
+        ipv4_address: 192.168.33.14
+  client4:
+    <<: *template
+    container_name: client4
+    hostname: client4
+    ports:
+      - "8085:80"
+    networks:
+      infraci_nw:
+        ipv4_address: 192.168.33.15
+  console:
+    <<: *template
+    container_name: console
+    hostname: console
+    ports:
+      - "2222:22"
+    networks:
+      infraci_nw:
+        ipv4_address: 192.168.33.99
+
+networks:
+  infraci_nw:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 192.168.33.0/24
