@@ -15,6 +15,14 @@
         state: started
         enabled: true
 
+    - systemd:
+        name: "{{ item }}"
+        state: stopped
+        masked: yes
+      with_items:
+        - getty@tty1.service
+        - serial-getty@ttyS0.service
+
     - group:
         name: vagrant
         state: present

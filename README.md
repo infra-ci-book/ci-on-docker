@@ -88,7 +88,11 @@ docker exec gitlab-runner \
 docker exec -it -u vagrant console bash
 
 root になる必要はありません。
+
 ```
+
+P84 の `VAGRANT_PRIVATE_KEY` に設定する鍵の内容は紙面と同じ `cat ~/.ssh/infraci` で参照でいます。
+
 
 ## 環境の再起動等
 
