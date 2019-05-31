@@ -69,7 +69,6 @@
         state: present
       loop:
         - ansible-2.4.2.0-2.el7
-        - https://github.com/infra-ci-book/support/raw/master/obsoleted/ansible-lint-3.4.21-1.el7.centos.noarch.rpm
 
     - systemd:
         name: sshd
