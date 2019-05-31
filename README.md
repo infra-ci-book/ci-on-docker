@@ -52,7 +52,7 @@ docker-compose up -d
 
 
 
-GitLabへログイン可能になったら以下を実行
+GitLabへログイン可能になったら以下を実行（ログインはブラウザで `サーバーのIPアドレス:8080` へアクセスします）
 ```
 RUNNER_TOKEN=token-AABBCCDD
 
