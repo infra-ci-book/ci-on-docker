@@ -82,13 +82,13 @@ docker exec gitlab-runner \
 
 ## 演習の開始
 
-演習を開始するには、以下のコマンドでコンソールサーバーから作業する（今回の手順ではCIホストにAnsible等が設定されず、代わりに console コンテナに設定が行われます）
+演習を開始するには、以下のコマンドでコンソールサーバーへ接続してから行います（今回の手順ではCIホストにAnsible等が設定されず、代わりに console コンテナに設定が行われます）
 
 ```
 docker exec -it -u vagrant console bash
 
-root になる必要はありません。
-
+# 初回ログインのみ以下を実行してください。
+yum install -y https://github.com/infra-ci-book/support/raw/master/obsoleted/ansible-lint-3.4.21-1.el7.centos.noarch.rpm
 ```
 
 P84 の `VAGRANT_PRIVATE_KEY` に設定する鍵の内容は紙面と同じ `cat ~/.ssh/infraci` で参照でいます。
