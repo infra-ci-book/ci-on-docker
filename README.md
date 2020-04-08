@@ -93,6 +93,11 @@ sudo yum install -y https://github.com/infra-ci-book/support/raw/master/obsolete
 
 P84 の `VAGRANT_PRIVATE_KEY` に設定する鍵の内容は紙面と同じ `cat ~/.ssh/infraci` で参照でいます。
 
+## 本編との差分
+
+本編ではホストマシンから vagrant ssh コマンドを利用してサーバーにログインする操作が含まれています。コンテナ環境を用いた場合は vagrant コマンドが利用できないため、代わりにホストマシンから docker exec コマンドを利用してください。
+
+
 
 ## 環境の再起動等
 
