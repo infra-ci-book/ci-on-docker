@@ -86,17 +86,13 @@ docker exec gitlab-runner \
 
 ```
 docker exec -it -u vagrant console bash
-
-# 初回ログインのみ以下を実行してください。
-sudo yum install -y https://github.com/infra-ci-book/support/raw/master/obsoleted/ansible-lint-3.4.21-1.el7.centos.noarch.rpm
 ```
 
 P84 の `VAGRANT_PRIVATE_KEY` に設定する鍵の内容は紙面と同じ `cat ~/.ssh/infraci` で参照でいます。
 
 ## 本編との差分
 
-本編ではホストマシンから vagrant ssh コマンドを利用してサーバーにログインする操作が含まれています。コンテナ環境を用いた場合は vagrant コマンドが利用できないため、代わりにホストマシンから docker exec コマンドを利用してください。
-
+本編ではホストマシンから vagrant ssh コマンドを利用してサーバーにログインする操作が含まれています。コンテナ環境を用いた場合は vagrant コマンドが利用できないため、代わりにホストマシンから docker exec コマンドか、コンソールから ssh コマンドを利用してください。
 
 
 ## 環境の再起動等
