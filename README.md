@@ -103,10 +103,10 @@ P84 の `VAGRANT_PRIVATE_KEY` に設定する鍵の内容は紙面と同じ `cat
 Unit_Package:
   stage: unit_prepare
   script:
-    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
     - |
         IMAGE_CHECK=`docker images ${CONTAINER_IMAGE_PATH}`
         if [ "IMAGE_CHECK" = "" ]; then
+            docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
             docker build . -t ${CONTAINER_IMAGE_PATH}
             docker push ${CONTAINER_IMAGE_PATH}
         fi
