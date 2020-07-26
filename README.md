@@ -95,6 +95,26 @@ P84 の `VAGRANT_PRIVATE_KEY` に設定する鍵の内容は紙面と同じ `cat
 本編ではホストマシンから vagrant ssh コマンドを利用してサーバーにログインする操作が含まれています。コンテナ環境を用いた場合は vagrant コマンドが利用できないため、代わりにホストマシンから docker exec コマンドか、コンソールから ssh コマンドを利用してください。
 
 
+## TIPs
+
+本編のパイプラインは毎回コンテナのビルドが走るため、負荷が高く時間もかかります。.gitlab-ci.yml を`Unit_Package`を以下のように編集することで初回のみビルドが走るように変更できます。
+
+```yaml
+Unit_Package:
+  stage: unit_prepare
+  script:
+    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+    - |
+        IMAGE_CHECK=`docker images ${CONTAINER_IMAGE_PATH}`
+        if [ "IMAGE_CHECK" = "" ]; then
+            docker build . -t ${CONTAINER_IMAGE_PATH}
+            docker push ${CONTAINER_IMAGE_PATH}
+        fi
+  tags:
+    - docker
+
+```
+
 ## 環境の再起動等
 
 
