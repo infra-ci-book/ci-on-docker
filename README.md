@@ -23,16 +23,16 @@ yum install -y docker-ce
 
 vi /usr/lib/systemd/system/docker.service
 ---
-ExecStart=/usr/bin/dockerd -H unix://
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
   ↓
-ExecStart=/usr/bin/dockerd --insecure-registry 192.168.33.10:4567 -H unix://
+ExecStart=/usr/bin/dockerd --insecure-registry 192.168.33.10:4567 -H fd:// --containerd=/run/containerd/containerd.sock
 ---
 
 systemctl enable docker
 
 
 # Check the latest version by https://github.com/docker/compose/releases/
-VERSION=1.23.2
+VERSION=1.29.1
 curl -L https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-`uname -s`-`uname -m` -o /bin/docker-compose
 chmod +x /bin/docker-compose
 
@@ -41,18 +41,22 @@ reboot
 ```
 
 
-CI環境の起動（3-5分）
+CI環境の起動
 ```
 mkdir -p ~/prepare && cd ~/prepare
 git clone https://github.com/infra-ci-book/ci-on-docker.git
 cd ci-on-docker/docker/env_build/docker-compose/
+```
+
+パスワードやトークンを変更する場合は `volumes/gitlab.rb` の値を編集する。その後 compose を起動(3-5分かかります)
+```
 docker-compose up -d
 ```
-パスワードやトークンを変更する場合は `infra-ci/ci-on-docker/docker/env_build/docker-compose/volumes/gitlab.rb` の値を編集する。
-
 
 
 GitLabへログイン可能になったら以下を実行（ログインはブラウザで `サーバーのIPアドレス:8080` へアクセスします）
+
+`RUNNER_TOKEN` には `volumes/gitlab.rg` で設定した値を使います。
 ```
 RUNNER_TOKEN=token-AABBCCDD
 
@@ -71,11 +75,20 @@ docker exec gitlab-runner \
        --docker-network-mode docker-compose_infraci_nw
 ```
 
+成功時の出力例
+``` 
+Running in system-mode.
+
+Registering runner... succeeded                     runner=token-AA
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+```
+
 
 環境全体の設定作業（書籍版の環境と合わせるための作業）
 
+- gitlab にログインする。ユーザーは `root` パスワードは `volumes/gitlab.rb` で設定した値。
 - 新規プロジェクトを作成して import project -> repo by URL から `https://github.com/infra-ci-book/ci-on-docker.git` をインポートする。
-- ci-on-docker のプロジェクトページから CI/CD -> pipelines -> run pipeline からパインプラインを実行する。
+- 作成されたプロジェクト `ci-on-docker` のプロジェクトページから CI/CD -> pipelines -> run pipeline からパインプラインを実行する。
 - 全ての処理が成功すると本編と同じ環境に設定される。
 
 
@@ -131,3 +144,22 @@ docker-compose start
 # 削除（やり直し)
 docker-compose down
 ```
+
+## インフラCIのデモとしてこの環境を使う場合
+
+1. 上記の「環境構築」を実施する
+2. GitLabへユーザーを追加する
+   - 「user」を「Regular」権限で追加（その他はデフォルト）
+3. プロジェクトの作成 → インポートを行う
+   - インポート元: https://github.com/infra-ci-book/ketchup-vagrant-ansible.git
+   - Visibility Level を 「Public」に設定
+4. 「ketchup-vagrant-ansible 」プロジェクトに「user」を「developer」権限で追加する
+5. プロジェクトのSettings -> CI/CD -> Secret Variables に変数を追加
+   - 変数名に「VAGRANT_PRIVATE_KEY」を追加
+   - 変数の内容は「~/.ssh/infraci」を設定する
+     - 確認方法
+     - `docker exec -it -u vagrant console bash`
+     - `cat ~/.ssh/infraci`
+6. 上記の「TIPS」を実施する
+7. pipeline を一回動かしてみる
+
