@@ -160,6 +160,7 @@ docker-compose down
      - 確認方法
      - `docker exec -it -u vagrant console bash`
      - `cat ~/.ssh/infraci`
-6. 上記の「TIPS」を実施する
-7. pipeline を一回動かしてみる
+6. pipeline を一回動かす（必要なコンテナがビルドされる）
+7. 上記の「TIPS」を実施し、2回目以降はビルドが走らないようにする
+8. 再度pipeline を一回動かしてみる
 
