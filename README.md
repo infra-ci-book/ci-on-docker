@@ -118,7 +118,7 @@ Unit_Package:
   script:
     - |
         IMAGE_CHECK=`docker images -q ${CONTAINER_IMAGE_PATH}`
-        if [ "IMAGE_CHECK" = "" ]; then
+        if [ "${IMAGE_CHECK}" = "" ]; then
             docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
             docker build . -t ${CONTAINER_IMAGE_PATH}
             docker push ${CONTAINER_IMAGE_PATH}
