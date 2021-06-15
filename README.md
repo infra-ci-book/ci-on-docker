@@ -117,7 +117,7 @@ Unit_Package:
   stage: unit_prepare
   script:
     - |
-        IMAGE_CHECK=`docker images ${CONTAINER_IMAGE_PATH}`
+        IMAGE_CHECK=`docker images -q ${CONTAINER_IMAGE_PATH}`
         if [ "IMAGE_CHECK" = "" ]; then
             docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
             docker build . -t ${CONTAINER_IMAGE_PATH}
@@ -160,7 +160,6 @@ docker-compose down
      - 確認方法
      - `docker exec -it -u vagrant console bash`
      - `cat ~/.ssh/infraci`
-6. pipeline を一回動かす（必要なコンテナがビルドされる）
-7. 上記の「TIPS」を実施し、2回目以降はビルドが走らないようにする
-8. 再度pipeline を一回動かしてみる
+6. 上記の「TIPS」を実施し、2回目以降はビルドが走らないようにする
+7. pipeline を一回動かしてみる
 
